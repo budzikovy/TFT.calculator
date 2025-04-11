@@ -3,15 +3,20 @@ package tftcalculator.tftcalculator.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import tftcalculator.tftcalculator.config.TftConstants;
 import tftcalculator.tftcalculator.data.dto.ChampionDto;
 
 @Mapper(componentModel = "spring")
-public interface ChampionMapper {
+public abstract class ChampionMapper {
+    
+    @Autowired
+    protected TftConstants tftConstants;
     
     @Named("removePrefix")
-    default String removePrefix(String value) {
-        if (value != null && value.startsWith("TFT14_")) {
-            return value.replace("TFT14_", "");
+    protected String removePrefix(String value) {
+        if (value != null && value.startsWith(tftConstants.getTftPrefix())) {
+            return value.replace(tftConstants.getTftPrefix(), "");
         }
         return value;
     }
@@ -20,5 +25,5 @@ public interface ChampionMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "cost", source = "cost")
     @Mapping(target = "traits", source = "traits")
-    ChampionDto toDto(ChampionDto entity);
+    public abstract ChampionDto toDto(ChampionDto entity);
 }

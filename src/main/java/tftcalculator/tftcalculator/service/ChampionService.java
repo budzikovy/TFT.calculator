@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tftcalculator.tftcalculator.config.TftConstants;
 import tftcalculator.tftcalculator.data.dto.ChampionDto;
 import tftcalculator.tftcalculator.data.dto.TeamCompositionDto;
 import tftcalculator.tftcalculator.data.dto.TeamCompositionRequestDto;
@@ -23,6 +24,7 @@ public class ChampionService {
 
     private final ChampionMapper championMapper;
     private final ObjectMapper objectMapper;
+    private final TftConstants tftConstants;
 
     public void debugJsonStructure() throws IOException {
         InputStream input = new URL("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json").openStream();
@@ -65,7 +67,7 @@ public class ChampionService {
             JsonNode characterNameNode = node.get("characterName");
             if (characterNameNode != null && characterNameNode.isTextual()) {
                 String characterName = characterNameNode.asText();
-                if (characterName.startsWith("TFT14_")) {
+                if (characterName.startsWith(tftConstants.getTftPrefix())) {
                     try {
                         log.info("Raw champion data: {}", node.toString());
                         ChampionDto dto = objectMapper.treeToValue(node, ChampionDto.class);
